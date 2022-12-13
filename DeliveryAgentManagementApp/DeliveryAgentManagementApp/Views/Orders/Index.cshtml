@@ -1,0 +1,119 @@
+﻿@model IEnumerable<DeliveryAgentManagementApp.Models.Order>
+@{
+    ViewData["Title"] = "Index";
+    string username = User.Identity.Name;
+}
+
+<h1>Orders</h1>
+
+<p>
+    @if (username.Equals("manager"))
+    {
+        <a asp-action="Create">Create a New Order</a> @:|
+        <a href="/couriers">Couriers</a>
+    }
+
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                OrderID
+            </th>
+            <th>
+                Product
+            </th>
+            <th>
+                Customer
+            </th>
+            <th>
+                Courier
+            </th>
+            <th>
+                Destination
+            </th>
+            <th>
+                Total Price
+            </th>
+            <th>
+                Retailer
+            </th>
+            <th>
+                Date Ordered
+            </th>
+            <th>
+                Delivery Status
+            </th>
+            <th>Functions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Courier.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Destination)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Retailer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOrdered)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeliveryStatus)
+                </td>
+                <td>
+                    @{
+
+                        if ((item.CourierId == null || item.DeliveryStatus == Status.EXCEPTION) && item.DeliveryStatus != Status.CANCELED)
+                        {
+                            <a asp-action="SendToCourierList" asp-route-id="@item.Id">Deliver</a>
+                            @:|
+
+
+                        }
+                        else
+                        {
+                            if (item.DeliveryStatus != Status.CANCELED && item.DeliveryStatus != Status.DELIVERED)
+                            {
+                                <a asp-action="CancelDelivery" asp-route-id="@item.Id">Cancel</a> @:|
+                            }
+
+                            if (username.Contains("courier") && item.DeliveryStatus != Status.DELIVERED)
+                            {
+                                <a asp-action="CheckDelivered" asp-route-id="@item.Id">Check Delivered</a>
+                                @:|
+                                <a asp-action="Reschedule" asp-route-id="@item.Id">Reschedule</a>
+                                @:|
+                            }
+                        }
+                        if (username.Equals("manager"))
+                        {
+                            <a asp-action="ShowMessages" asp-route-id="@item.Id">Show Messages</a> @:|
+                        }
+                    }
+
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<DeliveryAgentManagementApp.Models.Courier>
+
+@{
+    ViewData["Title"] = "Index";
+    string username = User.Identity.Name;
+}
+
+<h1>List of Couriers</h1>
+
+<p>
+    @*<a asp-action="Create">Create New</a>*@
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShippingFee)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShippingFee)
+            </td>
+            <td>
+                
+                @if(username.Equals("manager")) {
+                    <a asp-action="Choose" asp-route-id="@item.UserId">Choose for Delivery</a> @:|
+                }                
+                
+                <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.UserId">Details</a>
+                @if(username.Equals("manager")) {
+                    @:| 
+                }
+
+                @if(username.Equals("manager")) {
+                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                }
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
